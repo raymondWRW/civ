@@ -12,5 +12,11 @@ class Tile:
 		pygame.draw.polygon(screen, (255,255,255), [(x * template.CELL_SIZE + pos[0], y * template.CELL_SIZE + pos[1]) for x, y in template.TILE_EDGE],2)
 	def draw_highlight(self, screen, pos):
 		pygame.draw.polygon(screen, (255,255,0), [(x * template.CELL_SIZE + pos[0], y * template.CELL_SIZE + pos[1]) for x, y in template.TILE_EDGE],2)
+	def draw_tile_edge(self, screen, pos, color):
+		pygame.draw.polygon(screen, color, [(x * template.CELL_SIZE + pos[0], y * template.CELL_SIZE + pos[1]) for x, y in template.TILE_EDGE],2)
 	def draw_pop(self, screen, pos):	
 		self.pop.draw_pop(screen, pos)
+	def draw_resource(self, screen, pos):	
+		self.pop.draw_resource(screen, pos)
+	def draw_unit(self, screen, pos):	
+		self.pop.draw_unit(screen, pos)

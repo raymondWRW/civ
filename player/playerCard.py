@@ -13,5 +13,5 @@ class PlayerCard:
 		self.hand.add_card(card.card.PopulationGrowth())
 		self.hand.add_card(card.card.PopulationGrowth())
 		self.hand.add_card(card.card.PopulationGrowth())
-	def evaluate(self, board, order, player, visible_screen):
-		self.hand.hand[order[0][2]].evaluate(board, order, player, visible_screen)
+	def evaluate(self, board, players, visible_screen, order, index):
+		self.hand.hand[order[0][2].evaluate(board, players, visible_screen, order, index)]

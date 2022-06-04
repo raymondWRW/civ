@@ -19,7 +19,7 @@ def click(type, pos):
 	pass
 
 # def left_click():
-def mouse_input(player):
+def mouse_input(player_index):
 	cursor_pos = pygame.mouse.get_pos()
 	cursor_state =  pygame.mouse.get_pressed() 
 	if cursor_state[0]:#pressing left click = false
@@ -34,7 +34,7 @@ def mouse_input(player):
 	# else:
 	# 	click(player, cursor_pos, cursor_state)
 	elif init.last_mouse_info['dragging'] == False:#leftclick & rightclicks
-		click(player, cursor_pos)
+		click(player_index, cursor_pos)
 	update_mouse(cursor_pos, cursor_state)
 
 def update_mouse(cursor_pos, cursor_state):
@@ -49,28 +49,28 @@ def update_mouse(cursor_pos, cursor_state):
 		init.last_mouse_info['type'] = 'none'
 	init.last_mouse_info['pos'] = cursor_pos
  
-def click(player, cursor_pos):
+def click(player_index, cursor_pos):
 	if init.last_mouse_info['type'] == 'leftclick':
 		if init.visible_screen['hand']:
-			index = player.card.hand.mouse_over_card(cursor_pos)
+			index = init.players[player_index].hand.mouse_over_card(cursor_pos)
 			if index != -1:
 				init.order.append(('leftclick','hand', index))
-				evaluate(player)
+				evaluate(player_index)
 				return
 		if init.visible_screen['tile']:
 			index = init.board.get_tile_index(cursor_pos, init.screen_pos)
 			init.order.append(('leftclick','tile', index))
-			evaluate(player)
+			evaluate(player_index)
 			return
 		print(init.order)
 	elif init.last_mouse_info['type'] == 'rightclick':
 		pass #right click
 			
 #left/right click, the button that is click, the index of the button
-def evaluate(player):#last input = left/right click, what clicked 	
+def evaluate(player_index):#last input = left/right click, what clicked , index
 	if init.order[0][0] == 'leftclick':	
 		if init.order[0][1] == 'hand':
-			player.card.evaluate(init.board.map, init.order, player, init.visible_screen)
+			init.players[player_index].evaluate_hand(init.board.map, init.players, init.visible_screen, init.order)
 	else:
 		pass
 	# if input[0][0] == 'leftclick':

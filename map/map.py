@@ -12,7 +12,11 @@ class Board(map.hexArray.HexArray):
 					self.map[i][j].draw_tile(screen, temp_pos)
 	def highlight_tile(self, screen, screen_pos, index):#highlight a tile
 		temp_pos = (index[1] * template.CELL_SIZE * 12 + screen_pos[0] - template.CELL_SIZE * 6 * (index[0] % 2), index[0] * template.CELL_SIZE * 12 + screen_pos[1])
-		self.map[index[0]][index[1]].draw_highlight(screen, temp_pos)
+		self.map[index[0]][index[1]].draw_tile_edge(screen, temp_pos, (255, 255, 0))
+	def draw_edge_tile(self, screen, screen_pos, index, color):
+		temp_pos = (index[1] * template.CELL_SIZE * 12 + screen_pos[0] - template.CELL_SIZE * 6 * (index[0] % 2), index[0] * template.CELL_SIZE * 12 + screen_pos[1])
+		if temp_pos[0] > - template.CELL_SIZE * 5 and temp_pos[0] < int(pygame.Surface.get_width(screen)) + template.CELL_SIZE * 5 and temp_pos[1] > - template.CELL_SIZE * 5 and temp_pos[1] < int(pygame.Surface.get_height(screen)) + template.CELL_SIZE * 5:
+			self.map[index[0]][index[1]].draw_tile_edge(screen, temp_pos, color)
 	def draw_population(self, screen, screen_pos):
 		for i in range(len(self.map)):
 			for j in range(len(self.map[i])):

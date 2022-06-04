@@ -10,6 +10,11 @@ def draw(player):
 			#highlight the tile the mouse is hovering over
 			index = init.board.get_tile_index(tuple(init.last_mouse_info['pos']), init.screen_pos)
 			init.board.highlight_tile(template.screen, init.screen_pos, index)
+		if key == 'player_tile' and value:
+			#loop through all the players
+			for i in init.players:
+				for j in i.tile:
+					init.board.draw_edge_tile(template.screen, init.screen_pos, j, i.color)
 		if key == 'tile_extra':
 			if value == 'population':
 				init.board.draw_population(template.screen, init.screen_pos)	
@@ -20,8 +25,8 @@ def draw(player):
 			elif value == 'biulding':
 				init.board.draw_biulding(template.screen, init.screen_pos)	
 		if key == 'hand' and value:
-			player.card.hand.draw_hand(template.screen)
-			player.card.hand.draw_hovered_card(template.screen, pygame.mouse.get_pos())
+			player.hand.draw_hand(template.screen)
+			player.hand.draw_hovered_card(template.screen, pygame.mouse.get_pos())
 	pygame.display.update()
 
 

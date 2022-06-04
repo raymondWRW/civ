@@ -13,11 +13,18 @@ board = map.map.Board([[map.tile.Tile() for i in range(board_col + j % 2)] for j
 screen_pos = (0,0)
 
 #initializing the players
-player1 = player.player.Player((255, 0, 0))
-player1.tile.tile
+player1 = player.player.Player((255, 0, 0), 0)
+players = []
+players.append(player1)
+player1.tile.append((1,1))
+player1.tile.append((1,2))
+player1.tile.append((1,3))
+player1.tile.append((1,4))
+player1.tile.append((1,5))
 #initializing the draw file
 visible_screen = {
 	'tile' : True,
+	'player_tile': True,
 	'tile_extra' : None,
 	'hand' : True,
 }

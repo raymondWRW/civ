@@ -31,3 +31,4 @@ RESOURCE_FOOD = to_scale("image/buttonImage/wheat.png", CELL_SIZE * 2, CELL_SIZE
 #buttons
 
 #unit
+UNIT_WARRIOR = to_scale("image/buttonImage/warrior.png", CELL_SIZE * 2, CELL_SIZE * 2)
