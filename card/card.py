@@ -27,7 +27,7 @@ class PopulationGrowth(Card):
 			visible_screen['tile_extra'] = 'population'
 		else:
 			if order[1][0] == 'leftclick' and order[1][1] == 'tile':
-				if board[order[1][2][0]][order[1][2][1]].pop.max_pop > board[order[1][2][1]][order[1][2][1]].pop.cur_pop:
+				if board[order[1][2][0]][order[1][2][1]].pop.max_pop > board[order[1][2][0]][order[1][2][1]].pop.cur_pop:
 					board[order[1][2][0]][order[1][2][1]].pop.cur_pop += 1
 					players[player_index].hand.remove_card(order[0][2])
 			visible_screen['tile_extra'] = None

@@ -3,6 +3,12 @@ import math , init
 from pygame.locals import *
 import init
 import template
+def draw_resource(value, image, pos):
+	temp = pygame.Surface((100,50))
+	temp.fill((255,255,255))
+	template.screen.blit(temp,pos)	
+	template.screen.blit(image,pos)
+	template.screen.blit(template.RESOURCE_FONT.render(str(value), 1, (0,0,0)), (pos[0] + 50, pos[1]))
 def draw(player):
 	for key,value in init.visible_screen.items():
 		if key == 'tile' and value:
@@ -24,9 +30,20 @@ def draw(player):
 				init.board.draw_unit(template.screen, init.screen_pos)	
 			elif value == 'biulding':
 				init.board.draw_biulding(template.screen, init.screen_pos)	
+		if key == 'resource' and value: # draw the resources the player have
+			draw_resource(player.material.gold, template.RESOURCE_GOLD_2,(0,0))
+			draw_resource(player.material.food, template.RESOURCE_FOOD_2,(0,80))
+		if key == 'button' and value:
+			#next turn
+			init.next_turn_button.draw_Button(template.screen, (0, 300))
+			#draw card
+			init.draw_card_button.draw_Button(template.screen, (0, 400))
+			#deleted
+			init.delete_card_button.draw_Button(template.screen, (0, 500))
 		if key == 'hand' and value:
 			player.hand.draw_hand(template.screen)
 			player.hand.draw_hovered_card(template.screen, pygame.mouse.get_pos())
+
 	pygame.display.update()
 
 
