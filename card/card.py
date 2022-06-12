@@ -1,6 +1,8 @@
 import pygame
+from map.tile import Tile
 import template
 pygame.init()
+import unit,template
 #cost:	
 
 class Card:
@@ -33,19 +35,22 @@ class PopulationGrowth(Card):
 			visible_screen['tile_extra'] = None
 			order.clear()
 
-# class Warrior(Card):
-# 	def  __init__(self):
-# 		super().__init__('population growth')
-# 	def evaluate(self, map, order, player, visible_screen):
-# 		if len(order) == 1:
-# 			visible_screen['tile_extra'] = 'population'
-# 		else:
-# 			if order[1][0] == 'leftclick' and order[1][1] == 'tile':
-# 				if map[order[1][2][1]][order[1][2][1]].pop.cur_pop > 0:
-# 					map[order[1][2][0]][order[1][2][1]].pop.cur_pop += 1
-# 					self.finish(player, order)
-# 			visible_screen['tile_extra'] = None
-# 			order.clear()
+class Warrior(Card):
+	def  __init__(self):
+		super().__init__('warrior')
+	def evaluate(self, board, players, visible_screen, order, player_index):
+		if len(order) == 1:
+			visible_screen['tile_extra'] = 'population'
+		else:
+			if order[1][0] == 'leftclick' and order[1][1] == 'tile':
+				# print(board[order[1][2][0]][order[1][2][1]])
+				if board[order[1][2][0]][order[1][2][1]].pop.cur_pop > 0 and board[order[1][2][0]][order[1][2][1]].player_index == player_index:
+					board[order[1][2][0]][order[1][2][1]].pop.cur_pop -= 1
+					board[order[1][2][0]][order[1][2][1]].unit = unit.Unit(template.UNIT_WARRIOR, 'warrior', player_index, players[player_index].unit_stat['warrior'], players[player_index].color)
+					players[player_index].hand.remove_card(order[0][2])
+					players[player_index].unit.append(order[1][2])
+			visible_screen['tile_extra'] = 'unit'
+			order.clear()
 			
 				
     

@@ -3,7 +3,7 @@ import pygame, sys, template
 from pygame.locals import *
 import map.map, map.tile
 import card.hand,card.card
-import player.player
+import player
 import button
 pygame.init()
 
@@ -14,10 +14,11 @@ board = map.map.Board([[map.tile.Tile() for i in range(board_col + j % 2)] for j
 screen_pos = (0,0)
 
 #initializing the players
-player1 = player.player.Player((255, 0, 0), 0)
+player1 = player.Player((255, 0, 0), 0)
 players = []
 players.append(player1)
-player_index = 0
+player1.add_tile((3,3), board.map)
+current_player_index = 0#current player's index
 #draw buttons and stuff
 next_turn_button = button.Button(template.BUTTON_NEXT_TURN,'next turn')
 draw_card_button = button.Button(template.BUTTON_DRAW_CARD,'draw card')

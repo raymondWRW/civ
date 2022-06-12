@@ -4,15 +4,15 @@ class HexArray:
 		self.map = map
 	def get_hex(self, hex_index):
 		return self.map[hex_index[0]][hex_index[1]]
-	def to_cube(self, index, cell_size):#returns the cube cordiantes
+	def to_cube(index):#returns the cube cordiantes
 		q = index[1] - (index[0] + (index[0]&1)) // 2
 		r = index[0]
-		s = 0 - q - s
-		return(q / cell_size,r / cell_size,s / cell_size)
-	def get_distance(self, start_hex_index, end_hex_index):
+		s = 0 - q - r
+		return(q,r,s)
+	def get_distance(start_hex_index, end_hex_index):
 		#convert the index to axial cordiantes
-		temp1 = self.to_cube(start_hex_index)
-		temp2 = self.to_cube(end_hex_index)
+		temp1 = HexArray.to_cube(start_hex_index)
+		temp2 = HexArray.to_cube(end_hex_index)
 		return max(abs(temp1[0] - temp2[0]), abs(temp1[1] - temp2[1]), abs(temp1[2] - temp2[2]))
 	def get_tile_index(self,pos, cell_size):
 		#evenrow

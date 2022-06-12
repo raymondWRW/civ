@@ -14,7 +14,7 @@ def reset():
     init.order.clear()
     init.visible_screen['tile'] = True
     init.visible_screen['player_tile'] = True
-    init.visible_screen['tile_extra'] = None
+    init.visible_screen['tile_extra'] = 'unit'
     init.visible_screen['resource'] = True
     init.visible_screen['button'] = True
     init.visible_screen['hand'] = True
@@ -55,41 +55,45 @@ def click(cursor_pos):
 		if init.visible_screen['button']:
 			#next turn
 			if init.next_turn_button.within_boundary((0, 300), cursor_pos):
-				print(8)
-				init.player_index = (init.player_index + 1) % len(init.players)
-				init.players[init.player_index].add_income()
+				init.players[init.current_player_index].end_turn(init.board.map,init.players)
+				init.current_player_index = (init.current_player_index + 1) % len(init.players)
+				init.players[init.current_player_index].start_turn()
 				reset()
 				return
 			#delete card
 			if init.delete_card_button.within_boundary((0, 500), cursor_pos):
 				if len(init.order) == 1 and init.order[0][1] == 'hand':
 					init.players[init.player_index].hand.remove_card(init.order[0][2])	
-					init.players[init.player_index].material.sciencepoint += 1
+					init.players[init.player_index].material.science += 1
 				reset()
 				return
 			#add card
 		if init.visible_screen['hand']:
-			index = init.players[init.player_index].hand.mouse_over_card(cursor_pos)
+			index = init.players[init.current_player_index].hand.mouse_over_card(cursor_pos)
 			if index != -1:
 				init.order.append(('leftclick','hand', index))
-				evaluate(init.player_index)
+				evaluate()
 				return
 		if init.visible_screen['tile']:
 			index = init.board.get_tile_index(cursor_pos, init.screen_pos)
 			init.order.append(('leftclick','tile', index))
-			evaluate(init.player_index)
+			evaluate()
 			return
 		print(init.order)
 	elif init.last_mouse_info['type'] == 'rightclick':
 		pass #right click
 			
 #left/right click, the button that is click, the index of the button
-def evaluate(player_index):#last input = left/right click, what clicked , index
+def evaluate():#last input = left/right click, what clicked , index
 	if init.order[0][0] == 'leftclick':	
-		if init.order[0][1] == 'hand':
-			init.players[player_index].evaluate_hand(init.board.map, init.players, init.visible_screen, init.order)
+		if init.order[0][1] == 'hand': #playing card
+			init.players[init.current_player_index].evaluate_hand(init.board.map, init.players, init.visible_screen, init.order)
+		elif init.order[0][1] == 'tile': #moving unit
+			init.players[init.current_player_index].evaluate_tile(init.board.map, init.players, init.visible_screen, init.order)
+		else:
+			init.order.clear()
 	else:
-		pass
+		init.order.clear()
 	# if input[0][0] == 'leftclick':
 	# 	if input[0][1] == 'card':
 	# 		init.hand[input[0][3]].evaluate(init.order)

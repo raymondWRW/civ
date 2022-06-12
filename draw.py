@@ -33,6 +33,7 @@ def draw(player):
 		if key == 'resource' and value: # draw the resources the player have
 			draw_resource(player.material.gold, template.RESOURCE_GOLD_2,(0,0))
 			draw_resource(player.material.food, template.RESOURCE_FOOD_2,(0,80))
+			draw_resource(player.material.science, template.RESOURCE_SCIENCE_2,(0,160))
 		if key == 'button' and value:
 			#next turn
 			init.next_turn_button.draw_Button(template.screen, (0, 300))
@@ -43,7 +44,6 @@ def draw(player):
 		if key == 'hand' and value:
 			player.hand.draw_hand(template.screen)
 			player.hand.draw_hovered_card(template.screen, pygame.mouse.get_pos())
-
 	pygame.display.update()
 
 

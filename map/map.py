@@ -23,7 +23,7 @@ class Board(map.hexArray.HexArray):
 				temp_pos = (j * template.CELL_SIZE * 12 + screen_pos[0] - template.CELL_SIZE * 6 * (i % 2), i * template.CELL_SIZE * 12 + screen_pos[1])
 				if temp_pos[0] > - template.CELL_SIZE * 5 and temp_pos[0] < int(pygame.Surface.get_width(screen)) + template.CELL_SIZE * 5 and temp_pos[1] > - template.CELL_SIZE * 5 and temp_pos[1] < int(pygame.Surface.get_height(screen)) + template.CELL_SIZE * 5:
 					self.map[i][j].draw_pop(screen, temp_pos)
-	def draw_resource(self, screen, screen_pos):
+	def draw_resource(self, screen, screen_pos):#work in prgress
 		for i in range(len(self.map)):
 			for j in range(len(self.map[i])):
 				temp_pos = (j * template.CELL_SIZE * 12 + screen_pos[0] - template.CELL_SIZE * 6 * (i % 2), i * template.CELL_SIZE * 12 + screen_pos[1])
@@ -34,8 +34,8 @@ class Board(map.hexArray.HexArray):
 			for j in range(len(self.map[i])):
 				temp_pos = (j * template.CELL_SIZE * 12 + screen_pos[0] - template.CELL_SIZE * 6 * (i % 2), i * template.CELL_SIZE * 12 + screen_pos[1])
 				if temp_pos[0] > - template.CELL_SIZE * 5 and temp_pos[0] < int(pygame.Surface.get_width(screen)) + template.CELL_SIZE * 5 and temp_pos[1] > - template.CELL_SIZE * 5 and temp_pos[1] < int(pygame.Surface.get_height(screen)) + template.CELL_SIZE * 5:
-					self.map[i][j].draw_pop(screen, temp_pos)
-	def draw_biulding(self, screen, screen_pos):
+					self.map[i][j].draw_unit(screen, temp_pos)
+	def draw_biulding(self, screen, screen_pos):#work in progress
 		for i in range(len(self.map)):
 			for j in range(len(self.map[i])):
 				temp_pos = (j * template.CELL_SIZE * 12 + screen_pos[0] - template.CELL_SIZE * 6 * (i % 2), i * template.CELL_SIZE * 12 + screen_pos[1])

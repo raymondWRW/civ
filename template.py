@@ -31,6 +31,8 @@ RESOURCE_FOOD_1 = to_scale("image/buttonImage/wheat.png", CELL_SIZE * 2, CELL_SI
 RESOURCE_FOOD_2 = to_scale("image/buttonImage/wheat.png", 50, 50)
 RESOURCE_GOLD_1 = to_scale("image/buttonImage/gold.png", CELL_SIZE * 2, CELL_SIZE * 2)
 RESOURCE_GOLD_2 =  to_scale("image/buttonImage/gold.png", 50, 50)
+RESOURCE_SCIENCE_1 = to_scale("image/buttonImage/science.png", CELL_SIZE * 2, CELL_SIZE * 2)
+RESOURCE_SCIENCE_2 =  to_scale("image/buttonImage/science.png", 50, 50)
 
 #buttons
 BUTTON_FONT = pygame.font.SysFont("monospace", 20)
@@ -44,4 +46,5 @@ BUTTON_DRAW_CARD.blit(BUTTON_FONT.render(str("draw card"), 1, (0,0,0)), (5,15))
 BUTTON_DELETE_CARD = to_scale("image/buttonImage/button template.png", 120, 50)
 BUTTON_DELETE_CARD.blit(BUTTON_FONT.render(str("delete card"), 1, (0,0,0)), (5,15))
 #unit
-UNIT_WARRIOR = to_scale("image/buttonImage/warrior.png", CELL_SIZE * 2, CELL_SIZE * 2)
+UNIT_WARRIOR = to_scale("image/buttonImage/warrior.png", CELL_SIZE * 8, CELL_SIZE * 8)
+pygame.draw.circle(UNIT_WARRIOR,(0,0,0),(CELL_SIZE * 4, CELL_SIZE * 4),CELL_SIZE * 4,5)
