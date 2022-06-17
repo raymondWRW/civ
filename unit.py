@@ -1,45 +1,46 @@
 import pygame, template, map.hexArray
+from math import sin,cos,radians
+def pie(scr,color,center,radius,start_angle,stop_angle):
+    theta=start_angle
+    while theta <= stop_angle:
+        pygame.draw.line(scr,color,center, 
+        (center[0]+radius*cos(radians(theta)),center[1]+radius*sin(radians(theta))),2)
+        theta+=0.01
 unit_stat = {
 	'warrior' : {
 		'maxhealth' : 100,
-		'damage' : 10,
+		'damage' : 200,
 		'attackrange' : 1,
-		'capturerange' : 1,
-		'movement' : 2
+		'movement' : 1
 	},
 	'cavalary' : {
 		'maxhealth' : 100,
 		'damage' : 10,
 		'attackrange' : 1,
-		'capturerange' : 1,
 		'movement' : 2
 	},
 	'seigemachine' : {
 		'maxhealth' : 100,
 		'damage' : 10,
 		'attackrange' : 1,
-		'capturerange' : 1,
 		'movement' : 2
 	},
 	'pikeandshot' : {
 		'maxhealth' : 100,
 		'damage' : 10,
 		'attackrange' : 1,
-		'capturerange' : 1,
 		'movement' : 2
 	},
 	'artillery' : {
 		'maxhealth' : 100,
 		'damage' : 10,
 		'attackrange' : 1,
-		'capturerange' : 1,
 		'movement' : 2
 	},
 	'tank' : {
 		'maxhealth' : 100,
 		'damage' : 10,
 		'attackrange' : 1,
-		'capturerange' : 1,
 		'movement' : 2
 	}
 }
@@ -56,23 +57,23 @@ class Unit():
 		self.movement = self.maxmovement
 		self.damage = stat['damage']
 		self.attackrange = stat['attackrange']
-		self.capturerange = stat['capturerange']
 	def attack(self, board, start_pos, target_pos):
 		bonus = 0
-		board[target_pos[0]][target_pos[1]].unit.health -= (self.damage + bonus) * self.health // self.maxhealth
+		# board[target_pos[0]][target_pos[1]].unit.health -= (self.damage + bonus) * self.health // self.maxhealth
 		self.movement = 0
-		if board[target_pos[0]][target_pos[1]].unit.health <= 0:
-			board[target_pos[0]][target_pos[1]].unit = None
-		else:
-			board[target_pos[0]][target_pos[1]].unit.counterattack(board, target_pos, start_pos)
-		return 
+		return (self.damage + bonus) * self.health // self.maxhealth
+		# if board[target_pos[0]][target_pos[1]].unit.health <= 0:
+		# 	board[target_pos[0]][target_pos[1]].unit = None
+		# else:
+		# 	board[target_pos[0]][target_pos[1]].unit.counterattack(board, target_pos, start_pos)
+		# return
 	def counterattack(self, board, start_pos, target_pos):
 		bonus = 0
-		if map.hexArray.HexArray.get_distance(start_pos, target_pos) > board[start_pos[0]][start_pos[1]].unit.attack_range:
-			return
-		board[target_pos[0]][target_pos[1]].unit.health -= (self.damage + bonus)* self.health // self.maxhealth
-		if board[target_pos[0]][target_pos[1]].unit.health <= 0:
-			board[target_pos[0]][target_pos[1]].unit = None
+		return (self.damage + bonus) * self.health // self.maxhealth
+		# bonus = 0
+		# board[target_pos[0]][target_pos[1]].unit.health -= (self.damage + bonus)* self.health // self.maxhealth
+		# if board[target_pos[0]][target_pos[1]].unit.health <= 0:
+		# 	board[target_pos[0]][target_pos[1]].unit = None
 	def nextturn(self, board, pos, players):
 		if self.movement != 0:
 			if board[pos[0]][pos[1]].player_index == self.player_index:#it is in it own tile

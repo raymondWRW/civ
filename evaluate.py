@@ -26,7 +26,7 @@ def mouse_input():
 	if cursor_state[0]:#pressing left click = false
 		if init.last_mouse_info['type'] == 'leftclick':
 			if init.last_mouse_info['dragging'] == True:#moving screen when pressing leftclick
-				init.screen_pos = (init.screen_pos[0] - init.last_mouse_info['pos'][0] + cursor_pos[0], init.screen_pos[1] - init.last_mouse_info['pos'][1] + cursor_pos[1])
+				init.players[init.current_player_index].screen_pos = (init.players[init.current_player_index].screen_pos[0] - init.last_mouse_info['pos'][0] + cursor_pos[0], init.players[init.current_player_index].screen_pos[1] - init.last_mouse_info['pos'][1] + cursor_pos[1])
 	# elif cursor_state[1]:
 	# 	if init.last_mouse_info['mouse_type'] == 'rightclick':
 	# 		if cursor_pos != init.last_mouse_info['pos']:#moving when pressing leftclick
@@ -60,14 +60,21 @@ def click(cursor_pos):
 				init.players[init.current_player_index].start_turn()
 				reset()
 				return
+			#add card
+			if init.draw_card_button.within_boundary((0, 400), cursor_pos):
+				init.players[init.current_player_index].hand.add_card(init.players[init.current_player_index].deck.draw())
+				if len(init.order) == 1 and init.order[0][1] == 'hand':
+					init.players[init.current_player_index].hand.remove_card(init.order[0][2])	
+					init.players[init.current_player_index].material.science += 1
+				reset()
+				return
 			#delete card
 			if init.delete_card_button.within_boundary((0, 500), cursor_pos):
 				if len(init.order) == 1 and init.order[0][1] == 'hand':
-					init.players[init.player_index].hand.remove_card(init.order[0][2])	
-					init.players[init.player_index].material.science += 1
+					init.players[init.current_player_index].hand.remove_card(init.order[0][2])	
+					init.players[init.current_player_index].material.material['science'] += 1
 				reset()
 				return
-			#add card
 		if init.visible_screen['hand']:
 			index = init.players[init.current_player_index].hand.mouse_over_card(cursor_pos)
 			if index != -1:
@@ -75,7 +82,7 @@ def click(cursor_pos):
 				evaluate()
 				return
 		if init.visible_screen['tile']:
-			index = init.board.get_tile_index(cursor_pos, init.screen_pos)
+			index = init.board.get_tile_index(cursor_pos, init.players[init.current_player_index].screen_pos)
 			init.order.append(('leftclick','tile', index))
 			evaluate()
 			return

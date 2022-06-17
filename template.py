@@ -16,24 +16,34 @@ CARD_TEXT_FONT = pygame.font.SysFont("monospace", 10)
 #tile
 CELL_SIZE = 10
 TILE_EDGE = [(0,8), (6,4), (6, -4), (0,-8), (-6, -4), (-6, 4)]
-
+BORDER_INDEX_EVEN   = [(-1, 1), (0, 1), (1, 1), (1,  0), (0, -1), (-1,  0)]
+BORDER_INDEX_ODD  = [(-1, 0), (0, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
+RESOURCE_POS = [[],[(0,0)],[(-2,0),(2,0)], [(0,2.5),(-2,-1.5),(2,-1.5)],[(1.5,1.5),(-1.5,1.5),(1.5,-1.5),(-1.5,-1.5)]]
 # the following will be for the art of the program
 def to_scale(name, width, height):
 	temp = pygame.image.load(str(name)).convert_alpha()
-	return pygame.transform.scale(temp,(width, height))
-    
+	return pygame.transform.smoothscale(temp,(width, height))
+
 #card picture
 CARD_CARD = to_scale("image/cardImage/card.png", CARD_WIDTH, CARD_HEIGHT)
 CARD_POPULATIONGROWTH = ("image/cardImage/card.png", CARD_WIDTH, CARD_HEIGHT)
 #resource and population
 RESOURCE_FONT = pygame.font.SysFont("monospace", 50)#the showing player's resources
 RESOURCE_FOOD_1 = to_scale("image/buttonImage/wheat.png", CELL_SIZE * 2, CELL_SIZE * 2)
+pygame.draw.circle(RESOURCE_FOOD_1,(0,0,0),(CELL_SIZE, CELL_SIZE),CELL_SIZE, 1)
 RESOURCE_FOOD_2 = to_scale("image/buttonImage/wheat.png", 50, 50)
 RESOURCE_GOLD_1 = to_scale("image/buttonImage/gold.png", CELL_SIZE * 2, CELL_SIZE * 2)
 RESOURCE_GOLD_2 =  to_scale("image/buttonImage/gold.png", 50, 50)
 RESOURCE_SCIENCE_1 = to_scale("image/buttonImage/science.png", CELL_SIZE * 2, CELL_SIZE * 2)
 RESOURCE_SCIENCE_2 =  to_scale("image/buttonImage/science.png", 50, 50)
-
+RESOURCE_HAMMER_1 = to_scale("image/buttonImage/hammer.png", CELL_SIZE * 2, CELL_SIZE * 2)
+RESOURCE_HAMMER_2 = to_scale("image/buttonImage/hammer.png", 50, 50)
+cost_image = {
+	'food' : RESOURCE_FOOD_1,
+	'gold' : RESOURCE_GOLD_1,
+	'science' : RESOURCE_SCIENCE_1,
+	'hammer' : RESOURCE_HAMMER_1
+}
 #buttons
 BUTTON_FONT = pygame.font.SysFont("monospace", 20)
 	#next turn
