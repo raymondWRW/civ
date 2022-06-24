@@ -52,6 +52,12 @@ def update_mouse(cursor_pos, cursor_state):
  
 def click(cursor_pos):
 	if init.last_mouse_info['type'] == 'leftclick':
+		if init.visible_screen['discover'] != None:
+			index = init.visible_screen['discover'].mouse_over_card(cursor_pos)		
+			if index != -1:
+				init.order.append(('leftclick','discover card', index))
+				evaluate()
+				return
 		if init.visible_screen['button']:
 			#next turn
 			if init.next_turn_button.within_boundary((0, 300), cursor_pos):
@@ -86,7 +92,6 @@ def click(cursor_pos):
 			init.order.append(('leftclick','tile', index))
 			evaluate()
 			return
-		print(init.order)
 	elif init.last_mouse_info['type'] == 'rightclick':
 		pass #right click
 			

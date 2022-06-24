@@ -57,7 +57,7 @@ def draw(player):
 			player.hand.draw_hand(template.screen)
 			player.hand.draw_hovered_card(template.screen, pygame.mouse.get_pos())
 		if key == 'discover' and value != None:
-			value.draw(template.screen)
+			value.draw_hand(template.screen)
 	pygame.display.update()
 
 

@@ -2,6 +2,7 @@
 import button
 import pygame
 import template
+
 class Population():
 	def __init__(self, max_pop, cur_pop):
 		self.max_pop = max_pop

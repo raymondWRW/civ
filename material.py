@@ -13,6 +13,11 @@ class Material():
 			'gunpowder' : 0,
 			'oil' : 0
 		}
+		self.extra = {
+			'maxpopulation' : 0,
+			'population' : 0,
+			'tilecolor' : (0,0,0)
+		}
 		for i in res:
 			if i[0] in self.material:
 				self.material[i[0]] += i[1]
@@ -60,10 +65,10 @@ class Material():
 		return arr
 	def greater(self, res):
 		for i in res:
-			if i[0] in self.material.values():
+			if i[0] in self.material:
 				if self.material[i[0]] < i[1]:
 					return False
-			if i[0] in self.special_material.values():
+			if i[0] in self.special_material:
 				if self.material[i[0]] < i[1]:
 					return False
 		return True

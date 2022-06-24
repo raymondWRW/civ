@@ -5,12 +5,14 @@ import map.map, map.tile
 import card.hand,card.card
 import player
 import button
+import tileGenerator
 pygame.init()
 
 # initializing the board
 board_row = 15
 board_col = 30
-board = map.map.Board([[map.tile.Tile() for i in range(board_col + j % 2)] for j in range(board_row)])
+board = map.map.Board(tileGenerator.tile_generator(board_row, board_col, 7))
+# board = map.map.Board([[map.tile.Tile() for i in range(board_col + j % 2)] for j in range(board_row)])
 screen_pos = (0,0)
 
 #initializing the players
@@ -30,7 +32,8 @@ visible_screen = {
 	'tile_extra' : None,
 	'resource' : True,
 	'button' : True,
-	'hand' : True
+	'hand' : True,
+	'discover' : None
 }
 
 #initializing the evaluate file

@@ -2,13 +2,16 @@
 # a player needs recources
 #tile
 #color 
-import material, card.card, card.deck, card.hand, unit, map.hexArray
+import material, card.card, card.deck, card.hand, unit, map.hexArray, techTree
 class Player:
 	def  __init__(self, color, player_index):
 		#for identification
 		self.color = color
 		self.player_index = player_index
 		self.screen_pos = (0,0)
+		self.techtree = techTree.TechTree()
+		self.sciencebonus = None
+		self.militarybonus = None
 		#resources & income
 		self.material = material.Material([('food', 10),('science', 10),('hammer', 10),('gold', 10)])
 		self.income = material.Material([('food', 1),('science', 1),('hammer', 1),('gold', 1)])
@@ -18,7 +21,8 @@ class Player:
 		}
 		self.biulding_resource = {
 			'none'  : [],
-			'farm' : [('food', 1)]
+			'farm' : [('food', 1)],
+			'mine' : [('hammer', 1)]
 		}
 		#territory and borders
 		self.tile = set()
@@ -39,7 +43,8 @@ class Player:
 		for i in range(5):
 			self.deck.add_card(card.card.Farm())
 		self.deck.shuffle()
-		for i in range(7):
+		self.hand.add_card(techTree.ScientificAdvancement())
+		for i in range(6):
 			self.hand.add_card(self.deck.draw())
 	def evaluate_hand(self, board, players, visible_screen, order):
 		self.hand.hand[order[0][2]].evaluate(board, players, visible_screen, order, self.player_index)

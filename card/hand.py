@@ -13,11 +13,10 @@ class Hand:
 	def draw_hand(self, screen):
 		for index,i in enumerate(self.hand):
 			i.draw_pos(screen, (index * self.DISPLACEMENT + self.START_POS[0], self.START_POS[1]))	
-	def mouse_over_card(self, mouse_pos):
-		if mouse_pos[1] > self.START_POS[1]:
-			index = (mouse_pos[0] - self.START_POS[0])//self.DISPLACEMENT	
-			if index < len(self.hand) and index >= 0:
-				return index
+	def mouse_over_card(self, mouse_pos): # return index over the card
+		for i in range(len(self.hand) - 1, - 1,-1):
+			if self.hand[i].within_boundary((i * self.DISPLACEMENT + self.START_POS[0], self.START_POS[1]), mouse_pos):
+				return i
 		return -1
 	def draw_hovered_card(self, screen, mouse_pos):
 		index = self.mouse_over_card(mouse_pos)

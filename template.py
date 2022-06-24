@@ -9,9 +9,9 @@ screen = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 
 #card
 CARD_HEIGHT = 280
-CARD_WIDTH = 100
-CARD_TITLE_FONT = pygame.font.SysFont("monospace", 15)
-CARD_TEXT_FONT = pygame.font.SysFont("monospace", 10)
+CARD_WIDTH = 200
+CARD_TITLE_FONT = pygame.font.SysFont("montserrat", 20)
+CARD_TEXT_FONT = pygame.font.SysFont("montserrat", 15)
 
 #tile
 CELL_SIZE = 10
