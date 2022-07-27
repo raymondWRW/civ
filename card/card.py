@@ -1,114 +1,197 @@
 import pygame
-from map.tile import Tile
-import template
+from card.settingCard import *
+from card.hand import Hand
+from coreFunction.dictionaryExtended import *
+from unit.unit import *
+from unit.settingUnit import *
+from game.variable import *
 pygame.init()
-import unit,template, material
 #cost:	
-
 class Card:
-	def  __init__(self, name = 'card', cost = [], description = "every 5 tile added to your country increase research point by one"):
-		self.name = name
-		self.image = pygame.image.load("image/cardImage/card.png").convert_alpha()
-		self.image.blit(template.CARD_TITLE_FONT.render(self.name, 1, (0,0,0)), (20, 10))
-		self.mask = pygame.mask.from_surface(self.image)		
+	def  __init__(self, name = 'card', cost = {}, description = "template"):
+		self.name = name	
 		self.cost = cost
 		self.description = description
-		word = description.split(" ")
-		temp = ""
-		height = 0
-		for i in word:
-			size = pygame.font.Font.size(template.CARD_TEXT_FONT, temp + " " + i)
-			if size[0] > template.CARD_WIDTH:
-				self.image.blit(template.CARD_TEXT_FONT.render(temp, 1, (0,0,0)), ((template.CARD_WIDTH - pygame.font.Font.size(template.CARD_TEXT_FONT, temp)[0]) // 2, 170 + height * 30))
-				height += 1		
-				temp = ""
-			if temp == "":
-				temp = i
-			else:
-				temp = temp + " " + i
-		self.image.blit(template.CARD_TEXT_FONT.render(temp, 1, (0,0,0)), ((template.CARD_WIDTH - pygame.font.Font.size(template.CARD_TEXT_FONT, temp)[0]) // 2, 170 + height * 30))
-	def within_boundary(self, pos, mouse_pos):
-		temp_pos = (mouse_pos[0] - pos[0],mouse_pos[1] - pos[1])
-		if temp_pos[0] > 0 and temp_pos[1] > 0 and temp_pos[0] < self.mask.get_size()[0] and temp_pos[1] < self.mask.get_size()[1]:
-			return True
-	def draw_pos(self, screen, pos):
-		temp = self.image	
-		index = 0
-		for i in self.cost:
-			res = template.cost_image[i[0]]
-			for j in range(i[1]):
-				pygame.draw.circle(temp,(255,255,255),(10 + index * template.CELL_SIZE + template.CELL_SIZE, 20 + template.CELL_SIZE),template.CELL_SIZE)
-				temp.blit(res, (10 + index * template.CELL_SIZE, 20))
-				index += 1
-		screen.blit(temp, pos)
-		# might need to center the text in the future
-		# screen.blit(template.CARD_TITLE_FONT.render(self.name, 1, (0,0,0)), (pos[0] + 20, pos[1] + 10))
-	def evaluate(self, board, players, visible_screen, order, player_index):
-		if players[player_index].material.greater(self.cost):
-			players[player_index].material.remove_material(self.cost)
-			pass
-		players[player_index].hand.remove_card(order[0][2])
-		order.clear()
-		
+	def evaluate(self, board):
+		current_player = player[data['player_index']]
+		if greater(current_player.material, self.cost):
+			remove_value(player.material, self.cost)
+		player.hand.hand.pop(data['order'][0][2])
+		reset()
+	def finish_evaluate(self):
+		current_player = player[data['player_index']]
+		remove_value(player.material, self.cost)
+		current_player.deck.append(current_player.hand.hand.pop(data['order'][0][2]))
+		reset()
+										
 class PopulationGrowth(Card):
 	def  __init__(self):
-		super().__init__('population growth', [('food', 5)])
-	def evaluate(self, board, players, visible_screen, order, player_index):
-		if not players[player_index].material.greater(self.cost):
-			order.clear()
-			return
-		if len(order) == 1:
-			visible_screen['tile_extra'] = 'population'
-		else:
-			if order[1][0] == 'leftclick' and order[1][1] == 'tile':
-				if players[player_index].add_population(board, order[1][2]):
-					players[player_index].material.remove_material(self.cost)
-					players[player_index].hand.remove_card(order[0][2])
-					players[player_index].deck.add_card(PopulationGrowth())
-			visible_screen['tile_extra'] = 'unit'
-			order.clear()
+		super().__init__('population growth', {'food': 5}, "give a friendly tile 1 population")
+	def evaluate(self, board):
+		current_player = player[data['player_index']]
+		if greater(current_player.material, self.cost):
+			if len(data['order']) == 1:
+				shadow = [[0 for i in range(BOARD_COL + j % 2)] for j in range(BOARD_ROW)]
+				for i in range(len(shadow)):
+					for j in range(len(shadow[i])):
+						if board[i][j].player_index == data['player_index'] and board[i][j].population < board[i][j].max_population():
+							shadow[i][j] = -1
+				visible_screen['board']['tile_shadow'] = shadow
+				visible_screen['board']['tile_extra'] = 'population'
+				return
+			else:
+				if data['order'][1][0] == 'leftclick' and data['order'][1][1] == 'tile':
+					if current_player.add_population(board[data['order'][1][2][0]][data['order'][1][2][1]]):
+						self.finish_evaluate()
+		reset()
 
 class Warrior(Card):
 	def  __init__(self):
-		super().__init__('warrior', [('food', 10),('hammer',1),('gold', 5)])
-	def evaluate(self, board, players, visible_screen, order, player_index):
-		if not players[player_index].material.greater(self.cost):
-			order.clear()
-			return
-		if len(order) == 1:
-			visible_screen['tile_extra'] = 'population'
+		super().__init__('warrior', {'food' : 10 ,'hammer' : 1,'gold' : 5}, 'deploy a warrior on a friendly tile')
+	def evaluate(self, board):
+		current_player = player[data['player_index']]
+		if greater(current_player.material, self.cost):
+			if len(data['order']) == 1:
+				shadow = [[0 for i in range(BOARD_COL + j % 2)] for j in range(BOARD_ROW)]
+				for i in range(len(shadow)):
+					for j in range(len(shadow[i])):
+						if board[i][j].player_index == data['player_index'] and board[i][j].population != 0:
+							shadow[i][j] = -1
+				visible_screen['board']['tile_shadow'] = shadow
+				visible_screen['board']['tile_extra'] = 'population'
+			else:
+				if data['order'][1][0] == 'leftclick' and data['order'][1][1] == 'tile':
+					if current_player.remove_population(board[data['order'][1][2][0]][data['order'][1][2][1]]):
+						current_player.add_unit(board[data['order'][1][2][0]][data['order'][1][2][1]],  unitWarrior(data['player_index']))
+						self.finish_evaluate()
+				reset()
 		else:
-			if order[1][0] == 'leftclick' and order[1][1] == 'tile' and board[order[1][2][0]][order[1][2][1]].unit == None:
-				if players[player_index].remove_population(board, order[1][2]):
-					board[order[1][2][0]][order[1][2][1]].unit = unit.Unit(template.UNIT_WARRIOR, 'warrior', player_index, players[player_index].unit_stat['warrior'], players[player_index].color)
-					players[player_index].unit.append(order[1][2])
-					players[player_index].material.remove_material(self.cost)
-					players[player_index].hand.remove_card(order[0][2])
-					players[player_index].deck.add_card(Warrior())
-			visible_screen['tile_extra'] = 'unit'
-			order.clear()
-   
+			reset()
+
 class Farm(Card):
 	def  __init__(self):
-		super().__init__('Farm',[('food', 5),('hammer',1)])
-	def evaluate(self, board, players, visible_screen, order, player_index):
-		if not players[player_index].material.greater(self.cost):
-			order.clear()
-			return
-		if len(order) == 1:
-			visible_screen['tile_extra'] = 'population'
+		super().__init__('farm', {'food' : 5,'hammer' : 1}, 'build a building on a friendly tile')
+	def evaluate(self, board):
+		current_player = player[data['player_index']]
+		if greater(current_player.material, self.cost):
+			if len(data['order']) == 1:
+				shadow = [[0 for i in range(BOARD_COL + j % 2)] for j in range(BOARD_ROW)]
+				for i in range(len(shadow)):
+					for j in range(len(shadow[i])):
+						if board[i][j].player_index == data['player_index'] and board[i][j].building == 'none':
+							shadow[i][j] = -1
+				visible_screen['board']['tile_shadow'] = shadow
+				visible_screen['board']['tile_extra'] = 'population'
+			else:
+				if data['order'][1][0] == 'leftclick' and data['order'][1][1] == 'tile':
+					if current_player.add_building(board[data['order'][1][2][0]][data['order'][1][2][1]], 'farm'):
+						self.finish_evaluate()
+				reset()
 		else:
-			if order[1][0] == 'leftclick' and order[1][1] == 'tile':
-				if players[player_index].add_biulding(board, order[1][2], 'farm'):
-					players[player_index].material.remove_material(self.cost)
-					players[player_index].hand.remove_card(order[0][2])
-					players[player_index].deck.add_card(Farm())
-			visible_screen['tile_extra'] = 'unit'
-			order.clear()
-			
+			reset()
+   
+class Workshop(Card):
+	def  __init__(self):
+		super().__init__('workshop', {'food' : 5,'hammer' : 1}, 'build a workshop on a friendly tile')
+	def evaluate(self, board):
+		current_player = player[data['player_index']]
+		if greater(current_player.material, self.cost):
+			if len(data['order']) == 1:
+				shadow = [[0 for i in range(BOARD_COL + j % 2)] for j in range(BOARD_ROW)]
+				for i in range(len(shadow)): 
+					for j in range(len(shadow[i])):
+						if board[i][j].player_index == data['player_index'] and board[i][j].building == 'none':
+							shadow[i][j] = -1
+				visible_screen['board']['tile_shadow'] = shadow
+				visible_screen['board']['tile_extra'] = 'population'
+			else:
+				if data['order'][1][0] == 'leftclick' and data['order'][1][1] == 'tile':
+					if current_player.add_building(board[data['order'][1][2][0]][data['order'][1][2][1]], 'workshop'):
+						self.finish_evaluate()
+				reset()
+		else:
+			reset()
+	
+class Mine(Card):
+	def  __init__(self):
+		super().__init__('mine', {'food' : 5,'hammer' : 1}, 'build a mine on a friendly tile')
+	def evaluate(self, board):
+		current_player = player[data['player_index']]
+		if greater(current_player.material, self.cost):
+			if len(data['order']) == 1:
+				shadow = [[0 for i in range(BOARD_COL + j % 2)] for j in range(BOARD_ROW)]
+				for i in range(len(shadow)): 
+					for j in range(len(shadow[i])):
+						if board[i][j].player_index == data['player_index'] and board[i][j].building == 'none':
+							shadow[i][j] = -1
+				visible_screen['board']['tile_shadow'] = shadow
+				visible_screen['board']['tile_extra'] = 'population'
+			else:
+				if data['order'][1][0] == 'leftclick' and data['order'][1][1] == 'tile':
+					if current_player.add_building(board[data['order'][1][2][0]][data['order'][1][2][1]], 'mine'):
+						self.finish_evaluate()
+				reset()
+		else:
+			reset()
 
-    
+class LumberCamp(Card):
+	def  __init__(self):
+		super().__init__('lumber camp', {'food' : 5,'hammer' : 1}, 'build a lumber camp on a friendly tile')
+	def evaluate(self, board):
+		current_player = player[data['player_index']]
+		if greater(current_player.material, self.cost):
+			if len(data['order']) == 1:
+				shadow = [[0 for i in range(BOARD_COL + j % 2)] for j in range(BOARD_ROW)]
+				for i in range(len(shadow)): 
+					for j in range(len(shadow[i])):
+						if board[i][j].player_index == data['player_index'] and board[i][j].building == 'none':
+							shadow[i][j] = -1
+				visible_screen['board']['tile_shadow'] = shadow
+				visible_screen['board']['tile_extra'] = 'population'
+			else:
+				if data['order'][1][0] == 'leftclick' and data['order'][1][1] == 'tile':
+					if current_player.add_building(board[data['order'][1][2][0]][data['order'][1][2][1]], 'lumber camp'):
+						self.finish_evaluate()
+				reset()
+		else:
+			reset() 
+   
+class ScientificAdvancement(Card):
+	def __init__(self):
+		super().__init__('scientific advancement', {}, "choose a scientific advancement to discover!")
+	def evaluate(self, board):
+		current_player = player[data['player_index']]
+		if len(data['order']) == 1:
+			temp = Hand(300)
+			for i in player[data['player_index']].current_science_tech:
+				temp.hand.append(current_player.tech[i]['tech'])
+			visible_screen['discover'] = temp
+		else:
+			if data['order'][1][0] == 'leftclick' and data['order'][1][1] == 'discover card':
+				current_player.tech[current_player.current_science_tech[data['order'][1][2]]]['tech'].evaluate(board)
+			else:
+				reset()
 
+class Village(Card):
+	def __init__(self):
+		super().__init__('scientific advancement', {}, "choose a scientific advancement to discover!")
+	def evaluate(self, board):
+		current_player = player[data['player_index']]
+		if greater(current_player.material, self.cost):
+			if len(data['order']) == 1:
+				shadow = [[0 for i in range(BOARD_COL + j % 2)] for j in range(BOARD_ROW)]
+				for i in range(len(shadow)): 
+					for j in range(len(shadow[i])):
+						if board[i][j].player_index == data['player_index'] and board[i][j].housing == 'none':
+							shadow[i][j] = -1
+				visible_screen['board']['tile_shadow'] = shadow
+				visible_screen['board']['tile_extra'] = 'population'
+			else:
+				if data['order'][1][0] == 'leftclick' and data['order'][1][1] == 'tile':
+					if current_player.add_housing(board[data['order'][1][2][0]][data['order'][1][2][1]], 'village'):
+						self.finish_evaluate()
+				reset()
+		reset()
 
 
 # technology
