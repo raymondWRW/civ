@@ -10,9 +10,11 @@ def axial_to_cube(index):#returns the cube cordiantes
 def get_border_index(index):
 	border_index = []
 	if index[0] % 2 == 1:
-		border_index = BORDER_INDEX_ODD	
+		for i in range(6):
+			border_index.append((BORDER_INDEX_ODD[i][0] + index[0], BORDER_INDEX_ODD[i][1] + index[1]))
 	else:
-		border_index = BORDER_INDEX_EVEN
+		for i in range(6):
+			border_index.append((BORDER_INDEX_EVEN[i][0] + index[0], BORDER_INDEX_EVEN[i][1] + index[1]))
 	return border_index
 def get_distance(start_hex_index, end_hex_index):
 	#convert the index to axial cordiantes
@@ -30,4 +32,5 @@ def get_tile_index(pos, cell_size):
 	distance = (pos[0] -  (odd_pos[1] * cell_size * 12 - cell_size * 6)) * (pos[0] -  (odd_pos[1] * cell_size * 12 - cell_size * 6)) + (pos[1] -  (odd_pos[0] * cell_size * 12)) * (pos[1] -  (odd_pos[0] * cell_size * 12))
 	if distance <= 8 * cell_size *  8 * (cell_size - 1):
 		return odd_pos
-	raise Exception("unexpected index position %d"%(pos))
+	# raise Exception("unexpected index position %d"%(pos))
+	return (-1,-1)

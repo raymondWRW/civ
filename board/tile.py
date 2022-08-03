@@ -1,8 +1,10 @@
+from cmath import pi
 import pygame
 from board.settingTile import *
 from game.variable import *
 from coreFunction.dictionaryExtended import *
-from game.UI import UnitUI
+from coreFunction.surfaceExtended import *
+from unit.settingUnit import *
 # visible_screen = {
 # 	'board' : {
 # 		'tile' : True,
@@ -42,10 +44,12 @@ class Tile:
 	#draw
 	def update(self):
 		pass
-	
+
 	def draw_tile(self):
-		pygame.draw.polygon(self.display, self.color, [(x * CELL_SIZE + CELL_SIZE * 8, y * CELL_SIZE + CELL_SIZE * 8) for x, y in TILE_EDGE])
-		pygame.draw.polygon(self.display, (255,255,255), [(x * CELL_SIZE + CELL_SIZE * 8, y * CELL_SIZE + CELL_SIZE * 8) for x, y in TILE_EDGE],2)
+		self.display.blit(tile_image[self.name], (0, 0))
+		# pygame.draw.polygon(self.display, self.color, [(x * CELL_SIZE + CELL_SIZE * 8, y * CELL_SIZE + CELL_SIZE * 8) for x, y in TILE_EDGE])
+		# pygame.draw.polygon(self.display, (255,255,255), [(x * CELL_SIZE + CELL_SIZE * 8, y * CELL_SIZE + CELL_SIZE * 8) for x, y in TILE_EDGE],2)
+
 	def draw_shadow(self, color):
 		temp = pygame.Surface((CELL_SIZE * 16, CELL_SIZE * 16)).convert_alpha()
 		pygame.draw.polygon(temp, color, [(x * CELL_SIZE + CELL_SIZE * 8, y * CELL_SIZE + CELL_SIZE * 8) for x, y in TILE_EDGE])
@@ -57,10 +61,18 @@ class Tile:
 	# 	pygame.draw.polygon(screen, color, [(x * CELL_SIZE + pos[0], y * CELL_SIZE + pos[1]) for x, y in TILE_EDGE],2)
 	def draw_unit(self):
 		if self.unit != None:
-			self.display.blit(UnitUI(self.unit), (0,0))
+			# self.display.blit(UnitUI(self.unit), (0,0))
 			# self.unit.update()
 			# self.display.blit(self.unit.display, (0,0))
-
+			current_player = player[self.unit.player_index]
+			# pie(self.display, (255,255,255), (CELL_SIZE * 8 , CELL_SIZE * 8), CELL_SIZE * 5, -90, (360 * self.unit.health)//current_player.unit_stat[self.unit.name]['max health'] - 90)
+			health_percentage = self.unit.health/current_player.unit_stat[self.unit.name]['max health']
+			# print(health_percentage)
+			pygame.draw.arc(self.display, (255,255,255), Rect(CELL_SIZE * 4 - 5, CELL_SIZE * 4 - 5, CELL_SIZE * 9, CELL_SIZE * 9), pi/2, pi * 2 * health_percentage + pi/2, 5)
+			pygame.draw.circle(self.display, current_player.color, (CELL_SIZE * 8, CELL_SIZE * 8), CELL_SIZE * 4)
+			self.display.blit(unit_image[self.unit.name], (CELL_SIZE * 4 , CELL_SIZE * 4))
+			
+                #    (360 * self.unit.health)//current_player.unit_stat[self.unit.name]['max health'] - 90, 5)
 	def draw_pop(self):
 		for i in range(self.max_population()):
 			pos = (RESOURCE_POS[self.max_population()][i][0] * CELL_SIZE + CELL_SIZE * 6.5, RESOURCE_POS[self.max_population()][i][1] * CELL_SIZE + CELL_SIZE * 6.5)
@@ -68,6 +80,7 @@ class Tile:
 				self.display.blit(RESOURCE_FULLPOPULATION_TILE, pos)
 			else:
 				self.display.blit(RESOURCE_EMPTYPOPULATION_TILE, pos)
+
 	def draw_resource(self):
 		total = total_count(self.tile_resource())
 		index = 0

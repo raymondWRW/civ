@@ -1,3 +1,4 @@
+from lib2to3.pytree import convert
 from coreFunction.surfaceExtended import to_scale
 import pygame
 DISPLAY_WIDTH = 1200
@@ -9,6 +10,7 @@ RESOURCE_BACKGROUND_GOLD = to_scale("image/resource/gold.png", 50, 50)
 RESOURCE_BACKGROUND_FOOD = to_scale("image/resource/food.png", 50, 50)
 RESOURCE_BACKGROUND_RESEARCH = to_scale("image/resource/research.png", 50, 50)
 RESOURCE_BACKGROUND_HAMMER = to_scale("image/resource/hammer.png", 50, 50)
+RESOURCE_BACKGROUND_HORSE = to_scale("image/resource/horse.png", 50, 50)
 RESOURCE_FONT = pygame.font.SysFont("monospace", 50)
 BOARD_ROW = 15
 BOARD_COL  = 30

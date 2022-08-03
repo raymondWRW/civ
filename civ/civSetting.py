@@ -1,4 +1,5 @@
 from card.scienceTech import *
+from card.militaryTech import *
 color = {
 	'basic' : (153, 102, 204)
 }
@@ -6,19 +7,44 @@ civ_tile_resource = {
 	'none'  : {
 		'resource' : {},
 		'housing' : 0
-    },
+	},
 	'plain' : {
 		'resource' : {
 			'food' : 2
 		},
 		'housing' : 2
+	},
+	'wood' : {
+		'resource' : {
+			'food' : 2
+		},
+		'housing' : 1
+	},
+	'mountain' : {
+		'resource' : {
+			'hammer' : 1
+		},
+		'housing' : 1
+	},
+	'coast' : {
+		'resource' : {
+			'food' : 1
+		},
+		'housing' : 1
+	},
+	'ocean' : {
+		'resource' : {
+			'food' : 0
+		},
+		'housing' : 0
 	}
 }
 civ_starting_material = {
-    'food' : 100,
+    'food' : 10,
     'research' : 10,
     'hammer' : 10,
-    'gold' : 10
+    'gold' : 10,
+	'horse' : 0
 }
 civ_starting_income = {
     'food' : 1,
@@ -41,7 +67,7 @@ civ_building_income = {
 	},
 	'workshop' : {
 		'resource' : {
-			'hammer' : 1
+			'gold' : 1
 		},	
 		'housing' : 0,
 		'modifier' : []
@@ -95,7 +121,7 @@ tech = {
 			'tech' : [],
 			'amount' : 0
 		},
-		'future tech' : ['animal husbandry'],
+		'future tech' : ['animal husbandry', 'organization', 'flint', ],
 		'researched' : False
     },
 	'animal husbandry' : {
@@ -115,5 +141,122 @@ tech = {
 		},
 		'future tech' : [],
 		'researched' : False
+    },
+	'organization' : {
+		'tech' : Organization(),
+		'required' : {
+			'tech' : ['classical science'],
+			'amount' : 1
+		},
+		'future tech' : ['fishing', 'irrigation', 'mathematic'],
+		'researched' : False
+    },
+	'fishing' : {
+		'tech' : Fishing(),
+		'required' : {
+			'tech' : ['organization'],
+			'amount' : 1
+		},
+		'future tech' : [],
+		'researched' : False
+	},
+	'irrigation' : {
+		'tech' : Irrigation(),
+		'required' : {
+			'tech' : ['organization'],
+			'amount' : 1
+		},
+		'future tech' : [],
+		'researched' : False
+	},
+	'mathematic' : {
+		'tech' : Mathematic(),
+		'required' : {
+			'tech' : ['organization', 'flint'],
+			'amount' : 2
+		},
+		'future tech' : [],
+		'researched' : False
+	},
+	'flint' : {
+		'tech' : Flint(),
+		'required' : {
+			'tech' : ['classical science'],
+			'amount' : 1
+		},
+		'future tech' : ['mathematic', 'logging', 'bronze working'],
+		'researched' : False
+	},
+	'logging' : {
+		'tech' : Logging(),
+		'required' : {
+			'tech' : ['flint'],
+			'amount' : 1
+		},
+		'future tech' : [],
+		'researched' : False
+	},
+	'bronze working' : {
+		'tech' : BronzeWorking(),
+		'required' : {
+			'tech' : ['flint'],
+			'amount' : 1
+		},
+		'future tech' : [],
+		'researched' : False
+	},
+#military
+	'spear' : {
+		'tech' : Spear(),
+		'required' : {
+			'tech' : [],
+			'amount' : 0
+		},
+		'future tech' : ['military tradition'],
+		'researched' : False
+    },
+	'military tradition' : {
+		'tech' : MilitaryTradition(),
+		'required' : {
+			'tech' : ['spear'],
+			'amount' : 1
+		},
+		'future tech' : [],
+		'researched' : False
+	},
+	'standard uniform' : {
+		'tech' : StandardUniform(),
+		'required' : {
+			'tech' : [],
+			'amount' : 0
+		},
+		'future tech' : [],
+		'researched' : False
+    },
+	'chariot' : {
+		'tech' : Chariot(),
+		'required' : {
+			'tech' : [],
+			'amount' : 0
+		},
+		'future tech' : ['horseback riding'],
+		'researched' : False
+    },
+	'horseback riding' : {
+		'tech' : HorsebackRiding(),
+		'required' : {
+			'tech' : ['chariot'],
+			'amount' : 1
+		},
+		'future tech' : [],
+		'researched' : False
     }
 }
+# class Fishing(ScienceTech):
+# class Irrigation(ScienceTech):
+# class Mathematic(ScienceTech):
+
+# class Logging(ScienceTech):
+# class BronzeWorking(ScienceTech):
+
+# class Flint(ScienceTech):

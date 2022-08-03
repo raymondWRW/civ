@@ -15,10 +15,10 @@ class Civ():
 		self.player_index = player_index
 		self.screen_pos = (0,0)
 		#resources & income
-		self.material = copy.copy(civ_starting_material)
-		self.base_income = copy.copy(civ_starting_income)
-		self.tile_resource = copy.copy(civ_tile_resource)
-		self.building_resource = copy.copy(civ_building_income)
+		self.material = copy.deepcopy(civ_starting_material)
+		self.base_income = copy.deepcopy(civ_starting_income)
+		self.tile_resource = copy.deepcopy(civ_tile_resource)
+		self.building_resource = copy.deepcopy(civ_building_income)
 		#cards
 		self.hand = Hand(600)
 		self.deck = []
@@ -28,12 +28,13 @@ class Civ():
 		#technology
 		self.tech = copy.deepcopy(tech)
 		self.current_science_tech = ['classical science']
-		self.current_military_tech = []
+		self.current_military_tech = ['standard uniform', 'spear', 'chariot']
 		self.modifier = []
-		#initialize	
+		#initialize
 		self.start_game()
+		self.exploration_counter = 0
 	def start_game(self):
-		for i in range(17):
+		for i in range(7):
 			self.deck.append(PopulationGrowth())
 		for i in range(3):
 			self.deck.append(Warrior())
@@ -41,6 +42,8 @@ class Civ():
 			self.deck.append(Farm())
 		for i in range(2):
 			self.deck.append(ScientificAdvancement())
+		for i in range(2):
+			self.deck.append(MilitaryAdvancement())
 		for i in range(1):
 			self.deck.append(LumberCamp())
 		for i in range(1):
@@ -49,11 +52,11 @@ class Civ():
 			self.deck.append(Workshop())
 		random.shuffle(self.deck)
 		self.hand.hand.append(ScientificAdvancement())
+		self.hand.hand.append(MilitaryAdvancement())
 		self.hand.hand.append(PopulationGrowth())
 		self.hand.hand.append(PopulationGrowth())
 		self.hand.hand.append(PopulationGrowth())
-		self.hand.hand.append(Warrior())
-		self.hand.hand.append(Warrior())
+		self.hand.hand.append(PopulationGrowth())
 	#evaluation
 	def evaluate(self, board):
 		if len(data['order']) == 0:
@@ -82,6 +85,8 @@ class Civ():
 			if data['order'][1][0] == 'leftclick' and data['order'][1][1] == 'hand':
 				self.hand.hand.pop(data['order'][1][2])
 				add_value(self.material, {'science' : 1})
+				if 'insight' in self.modifier:
+					add_value(self.material, {'gold' : 1})
 			reset()
 	def evaluate_draw_card(self):
 		if greater(self.material, self.draw_card_cost):
@@ -113,10 +118,7 @@ class Civ():
 					if distance == 0:
 						pass
 					elif target_tile.unit == None:
-						if get_distance(data['order'][0][2], data['order'][1][2]) <= start_tile.unit.movement:
-							start_tile.unit.movement -= distance
-							target_tile.unit = start_tile.unit
-							start_tile.unit = None
+						start_tile.unit.move(start_tile, target_tile, get_distance(data['order'][0][2], data['order'][1][2]))
 					elif target_tile.unit.player_index != self.player_index:
 						if distance <= self.unit_stat[start_tile.unit.name]['attack range']:
 							target_tile.unit.health -= self.unit_stat[start_tile.unit.name]['damage'] * start_tile.unit.health // self.unit_stat[start_tile.unit.name]['max health']
@@ -153,6 +155,7 @@ class Civ():
 	def draw_card(self):
 		if len(self.hand.hand) <= MAX_HAND_SIZE:
 			self.hand.hand.append(self.deck.pop(0))
+			random.shuffle(self.deck)
 			return True
 		return False
 	def add_population(self, tile, time = 1):
@@ -160,6 +163,8 @@ class Civ():
 			return False
 		if tile.population + time <= tile.max_population():
 			tile.population += time
+			if 'administration' in self.modifier:
+				self.draw_card()
 			return True
 		return False
 	def remove_population(self, tile, time = 1):
@@ -171,7 +176,14 @@ class Civ():
 		return False
 	def add_tile(self, tile):
 		if tile.player_index != self.player_index:
+			if tile.player_index != 0:
+				player[tile.player_index].remove_tile(tile)
 			tile.player_index = self.player_index
+			if 'exploration' in self.modifier:
+				self.exploration_counter += 1
+				if self.exploration_counter > 2:
+					self.exploration_counter -= 3
+					add_value(self.material, {'research' : 1})
 			return True
 		return False
 	def remove_tile(self, tile):

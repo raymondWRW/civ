@@ -9,6 +9,7 @@ from board.board import Board
 from game.variable import *
 from civ.civ import Civ
 from civ.country.china import China
+from civ.country.mongolia import Mongolia
 from UI import *
 pygame.init()
 class Game:
@@ -16,13 +17,11 @@ class Game:
 		pygame.init()
 		pygame.display.set_caption('Modernity')
 		self.clock = pygame.time.Clock()
-		self.board = Board()
-		self.board.tileGeneration()
-		player[2] = Civ(2, (50, 168, 82))
+		player[2] = Mongolia(2)
 		player[1] = China(1)
 		player[0] = Civ(0, (255,255,255))
-		self.board.board[3][3].player_index = 1
-		self.board.board[4][5].player_index = 2
+		self.board = Board()
+		self.board.tileGeneration()
 	def run(self):
 		while True:
 			for event in pygame.event.get():
@@ -54,6 +53,9 @@ class Game:
 			#research (0, 180)
 			screen.blit(RESOURCE_BACKGROUND_RESEARCH,(0, 180))
 			screen.blit(RESOURCE_FONT.render(str(current_player.material['research']), 1, (0,0,0)), (50, 180))
+			#horse (0,240)
+			screen.blit(RESOURCE_BACKGROUND_HORSE,(0, 240))
+			screen.blit(RESOURCE_FONT.render(str(current_player.material['horse']), 1, (0,0,0)), (50, 240))
 		if visible_screen['button']:
 			#next turn
 			screen.blit(BUTTON_NEXT_TURN, (button_next_turn_pos))
@@ -68,7 +70,7 @@ class Game:
 			# if 0 <= index < len(current_player.hand.hand):
 			# 	screen.blit(current_player.hand.hand[index].display, (index * 120, 470))
 		if visible_screen['discover'] != None:	
-			screen.blit(HandUI(visible_screen['discover']),(0, 0))
+			screen.blit(DiscoverUI(visible_screen['discover']),(0, 0))
 
 	def evaluate(self):
 		cursor_pos = pygame.mouse.get_pos()

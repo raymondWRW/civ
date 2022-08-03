@@ -20,10 +20,10 @@ class Card:
 		reset()
 	def finish_evaluate(self):
 		current_player = player[data['player_index']]
-		remove_value(player.material, self.cost)
+		remove_value(current_player.material, self.cost)
 		current_player.deck.append(current_player.hand.hand.pop(data['order'][0][2]))
 		reset()
-										
+
 class PopulationGrowth(Card):
 	def  __init__(self):
 		super().__init__('population growth', {'food': 5}, "give a friendly tile 1 population")
@@ -43,6 +43,7 @@ class PopulationGrowth(Card):
 				if data['order'][1][0] == 'leftclick' and data['order'][1][1] == 'tile':
 					if current_player.add_population(board[data['order'][1][2][0]][data['order'][1][2][1]]):
 						self.finish_evaluate()
+
 		reset()
 
 class Warrior(Card):
@@ -55,15 +56,16 @@ class Warrior(Card):
 				shadow = [[0 for i in range(BOARD_COL + j % 2)] for j in range(BOARD_ROW)]
 				for i in range(len(shadow)):
 					for j in range(len(shadow[i])):
-						if board[i][j].player_index == data['player_index'] and board[i][j].population != 0:
+						if board[i][j].player_index == data['player_index'] and board[i][j].population != 0 and board[i][j].name != 'ocean' and board[i][j] != 'coast':
 							shadow[i][j] = -1
 				visible_screen['board']['tile_shadow'] = shadow
 				visible_screen['board']['tile_extra'] = 'population'
 			else:
 				if data['order'][1][0] == 'leftclick' and data['order'][1][1] == 'tile':
-					if current_player.remove_population(board[data['order'][1][2][0]][data['order'][1][2][1]]):
-						current_player.add_unit(board[data['order'][1][2][0]][data['order'][1][2][1]],  unitWarrior(data['player_index']))
-						self.finish_evaluate()
+					if board[data['order'][1][2][0]][data['order'][1][2][1]].name != 'ocean' and board[data['order'][1][2][0]][data['order'][1][2][1]].name != 'coast':
+						if current_player.remove_population(board[data['order'][1][2][0]][data['order'][1][2][1]]):
+							current_player.add_unit(board[data['order'][1][2][0]][data['order'][1][2][1]],  unitWarrior(data['player_index']))
+							self.finish_evaluate()
 				reset()
 		else:
 			reset()
@@ -89,7 +91,7 @@ class Farm(Card):
 				reset()
 		else:
 			reset()
-   
+
 class Workshop(Card):
 	def  __init__(self):
 		super().__init__('workshop', {'food' : 5,'hammer' : 1}, 'build a workshop on a friendly tile')
@@ -111,7 +113,7 @@ class Workshop(Card):
 				reset()
 		else:
 			reset()
-	
+
 class Mine(Card):
 	def  __init__(self):
 		super().__init__('mine', {'food' : 5,'hammer' : 1}, 'build a mine on a friendly tile')
@@ -155,7 +157,7 @@ class LumberCamp(Card):
 				reset()
 		else:
 			reset() 
-   
+
 class ScientificAdvancement(Card):
 	def __init__(self):
 		super().__init__('scientific advancement', {}, "choose a scientific advancement to discover!")
@@ -166,9 +168,29 @@ class ScientificAdvancement(Card):
 			for i in player[data['player_index']].current_science_tech:
 				temp.hand.append(current_player.tech[i]['tech'])
 			visible_screen['discover'] = temp
+			shadow = [[0 for i in range(BOARD_COL + j % 2)] for j in range(BOARD_ROW)]
+			visible_screen['board']['tile_shadow'] = shadow
 		else:
 			if data['order'][1][0] == 'leftclick' and data['order'][1][1] == 'discover card':
 				current_player.tech[current_player.current_science_tech[data['order'][1][2]]]['tech'].evaluate(board)
+			else:
+				reset()
+
+class MilitaryAdvancement(Card):
+	def __init__(self):
+		super().__init__('military advancement', {}, "choose a military advancement to discover!")
+	def evaluate(self, board):
+		current_player = player[data['player_index']]
+		if len(data['order']) == 1:
+			temp = Hand(300)
+			for i in player[data['player_index']].current_military_tech:
+				temp.hand.append(current_player.tech[i]['tech'])
+			visible_screen['discover'] = temp
+			shadow = [[0 for i in range(BOARD_COL + j % 2)] for j in range(BOARD_ROW)]
+			visible_screen['board']['tile_shadow'] = shadow
+		else:
+			if data['order'][1][0] == 'leftclick' and data['order'][1][1] == 'discover card':
+				current_player.tech[current_player.current_military_tech[data['order'][1][2]]]['tech'].evaluate(board)
 			else:
 				reset()
 
@@ -193,6 +215,29 @@ class Village(Card):
 				reset()
 		reset()
 
+class Cavalry(Card):
+	def  __init__(self):
+		super().__init__('cavalry', {'food' : 10 ,'hammer' : 2, 'gold' : 5, 'horse' : 5}, 'deploy a cavalry on a friendly tile')
+	def evaluate(self, board):
+		current_player = player[data['player_index']]
+		if greater(current_player.material, self.cost):
+			if len(data['order']) == 1:
+				shadow = [[0 for i in range(BOARD_COL + j % 2)] for j in range(BOARD_ROW)]
+				for i in range(len(shadow)):
+					for j in range(len(shadow[i])):
+						if board[i][j].player_index == data['player_index'] and board[i][j].population != 0 and board[i][j].name != 'ocean' and board[i][j] != 'coast':
+							shadow[i][j] = -1
+				visible_screen['board']['tile_shadow'] = shadow
+				visible_screen['board']['tile_extra'] = 'population'
+			else:
+				if data['order'][1][0] == 'leftclick' and data['order'][1][1] == 'tile':
+					if board[data['order'][1][2][0]][data['order'][1][2][1]].name != 'ocean' and board[data['order'][1][2][0]][data['order'][1][2][1]].name != 'coast':
+						if current_player.remove_population(board[data['order'][1][2][0]][data['order'][1][2][1]]):
+							current_player.add_unit(board[data['order'][1][2][0]][data['order'][1][2][1]],  unitCavalry(data['player_index']))
+							self.finish_evaluate()
+				reset()
+		else:
+			reset()
 
 # technology
 """

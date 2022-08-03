@@ -7,8 +7,9 @@ from game.variable import *
 from card.scienceTech import *
 from civ.civ import Civ
 
-class Mongloia(Civ):
+class Mongolia(Civ):
 	def __init__(self, player_index):
 		super().__init__(player_index, (0,102,179))
-		self.tile_resource['farm']['resource']['food'] += 1
+		add_value(self.tile_resource['plain']['resource'], {'gold' : 1})
+
   
