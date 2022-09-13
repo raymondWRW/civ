@@ -1,4 +1,5 @@
 #hex array is to make sure the hexagon makes sense in arrays
+from data.dataGame import BOARD_ROW, BOARD_COL
 # function for hex array
 BORDER_INDEX_EVEN   = [(-1, 1), (0, 1), (1, 1), (1,  0), (0, -1), (-1,  0)]
 BORDER_INDEX_ODD  = [(-1, 0), (0, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
@@ -15,6 +16,11 @@ def get_border_index(index):
 	else:
 		for i in range(6):
 			border_index.append((BORDER_INDEX_EVEN[i][0] + index[0], BORDER_INDEX_EVEN[i][1] + index[1]))
+	for i in range (len(border_index) - 1, -1, -1):
+		if 0 <= border_index[i][0] < BOARD_ROW and 0 <= border_index[i][1] < BOARD_COL + border_index[i][0] % 2:
+			continue
+		else:
+			border_index.pop(i)
 	return border_index
 def get_distance(start_hex_index, end_hex_index):
 	#convert the index to axial cordiantes

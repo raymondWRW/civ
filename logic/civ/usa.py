@@ -1,0 +1,1 @@
+#minuteman- after you lose an infantry add a infantry card and a population growth card to your hand

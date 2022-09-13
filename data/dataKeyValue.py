@@ -1,0 +1,43 @@
+screen_pos = 'screen_pos'
+player_index = 'player_index'
+order = 'order'
+type = 'type'
+pos = 'pos'
+dragging = 'dragging'
+board = 'board'
+tile = 'tile'
+tile_extra = 'tile_extra'
+hand = 'hand'
+discover = 'discover'
+#unit
+warrior = 'warrior'
+cavalry = 'cavalry'
+boat = 'boat'
+#resource
+food = 'food'
+gold = 'gold'
+research = 'research'
+hammer = 'hammer'
+horse = 'horse'
+empty_population = 'empty population'
+full_population = 'full_population'
+#tile name
+none = 'none'
+plain = 'plain'
+coast = 'coast'
+ocean = 'ocean'
+hill = 'hill'
+wood = 'wood'
+mountain = 'mountain'
+#tile data
+resource = 'resource'
+housing = 'housing'
+move_cost = 'move cost'
+modifier = 'modifier'
+
+
+#error message
+invalid_input = 'invalid input'
+invalid_placement = 'invalid placement'
+insufficient_material = 'insufficient material'
+# invalid_input = 'invalid_input'
